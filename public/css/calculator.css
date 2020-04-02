@@ -44,7 +44,7 @@ body {
     line-height: 70px;
     text-align: right;
     overflow-x: scroll;
-    overflow-y:hidden;
+    overflow-y: hidden;
     white-space: nowrap;
 }
 

@@ -38,10 +38,19 @@ class AppController
 
     /**
      * Affiche la calculette
+     *
+     * - si l'état de la calculette est ACCUMULATE, alors affiche l'accumulateur dans la partie result-screen
+     * - sinon affiche le résultat
      */
     public function index()
     {
-        $this->render('Afin qu\'elle affiche le résultat désiré', 'Modifier la méthode index');
+        $result = $this->manager->isAccumulateState() ?
+            $this->manager->getAccumulator() :
+            $this->manager->getResult();
+        $this->render(
+            $result,
+            $this->manager->getInput()
+        );
     }
 
     /**
@@ -50,6 +59,8 @@ class AppController
      */
     public function error(string $input)
     {
+        $result = $this->manager->getResult();
+        require ROOT . '/app/view/calculator.php';
     }
 
     /**
@@ -58,17 +69,51 @@ class AppController
      */
     public function accumulate(string $value)
     {
-        // TODO: implémenter la méthode
-        $this->index();
+        try {
+            $this->manager->append($value);
+            $this->index();
+        }
+        catch (Exception $e) {
+            $this->error($e->getMessage());
+        }
     }
 
     /**
-     * Lance une action (opération, égal, pourcentage, ...)
+     * Lance une action
      * @param string $action
      */
     public function action(string $action)
     {
-        // TODO: implémenter la méthode
-        $this->index();
+        try {
+            switch ($action) {
+                case 'clear':
+                    $this->manager->clear();
+                    break;
+                case 'plusmn':
+                    $this->manager->swapSign();
+                    break;
+                case 'divide':
+                case 'times':
+                case 'minus':
+                case 'plus':
+                    $this->manager->operation($action);
+                    break;
+                case 'percnt':
+                    $this->manager->percent();
+                    break;
+                case 'equals':
+                    $this->manager->equals();
+                    break;
+                case 'middot':
+                    $this->manager->addComma();
+                    break;
+                default:
+                    throw new Exception('## Erreur : la fonction n\'est pas encore implémentée ##');
+            }
+            $this->index();
+        }
+        catch (Exception $e) {
+            $this->error($e->getMessage());
+        }
     }
 }
