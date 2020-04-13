@@ -9,7 +9,7 @@ use Exception;
 /**
  * Class Calculator
  * @package App\Model
- *  Un calculatrice pour fonctionner doit disposer :
+ *  Une calculatrice pour fonctionner doit disposer :
  *
  * - d'un accumulateur qui, par concaténation des différentes saisies utilisateur permet d'obtenir un nouvel opérande
  * - d'un opérateur pour le calcul courant (+, -, x, ...)
